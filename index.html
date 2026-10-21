@@ -1,0 +1,419 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZenShops | Premium Store</title>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#090909;color:#fff;font-family:Arial,sans-serif}
+header{padding:18px;text-align:center;border-bottom:1px solid #b89545}
+.logo{font-size:30px;font-weight:bold;color:#e7c56b}
+nav{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:15px}
+button,a.btn{background:#e7c56b;color:#111;border:0;border-radius:5px;padding:11px 15px;font-weight:bold;cursor:pointer;text-decoration:none}
+nav button{background:#222;color:#e7c56b;border:1px solid #b89545}
+.hero{text-align:center;padding:45px 15px;background:linear-gradient(140deg,#171717,#33240b,#080808)}
+.hero h1{font-size:38px}
+.gold{color:#e7c56b}
+section{padding:20px 0}
+h2{text-align:center;color:#e7c56b}
+.products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:12px}
+.product{background:#171717;border:1px solid #393021;border-radius:10px;padding:12px;text-align:center;overflow:hidden}
+.product img{width:100%;height:150px;object-fit:contain;border-radius:5px}
+.pic{font-size:55px;height:150px;display:flex;align-items:center;justify-content:center}
+.price{color:#e7c56b;font-weight:bold;font-size:19px}
+.product button{width:100%;margin-top:8px}
+.panel{max-width:750px;margin:20px auto;padding:18px;background:#171717;border:1px solid #b89545;border-radius:10px}
+input,textarea,select{width:100%;padding:12px;margin:7px 0 14px;background:#090909;color:white;border:1px solid #66552d;border-radius:5px}
+label{color:#e7c56b}
+.hidden{display:none!important}
+.rowbtn{display:flex;gap:8px;flex-wrap:wrap}
+.rowbtn button{flex:1}
+.preview{max-width:180px;max-height:180px;object-fit:contain;display:block;margin:8px 0}
+.small{font-size:12px;color:#aaa;line-height:1.5}
+#cart{padding:20px;text-align:center}
+footer{text-align:center;padding:25px;border-top:1px solid #b89545;color:#aaa}
+@media(min-width:700px){.products{grid-template-columns:repeat(4,minmax(0,1fr))}.hero h1{font-size:50px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">✦ ZenShops</div>
+  <p>Luxury Finds. Smarter Prices.</p>
+  <nav>
+    <button onclick="showPage('home')">Home</button>
+    <button onclick="showPage('productsSection')">Products</button>
+    <button onclick="showPage('cart')">My Cart</button>
+    <button onclick="showPage('ownerLogin')">Owner Login</button>
+  </nav>
+</header>
+
+<main id="home">
+  <section class="hero">
+    <p>THE NEW SHOPPING EXPERIENCE</p>
+    <h1>Discover Your <span class="gold">Luxury</span></h1>
+    <p>Fashion, gadgets and lifestyle essentials.</p>
+    <button onclick="showPage('productsSection')">Explore Collection</button>
+  </section>
+
+  <section id="productsSection">
+    <h2>Featured Collection</h2>
+    <div class="products" id="productList"></div>
+  </section>
+
+  <section id="cart" class="hidden">
+    <h2>Your Shopping Cart</h2>
+    <div id="cartItems">Your cart is empty.</div>
+    <h3 id="total">Total: ₹0</h3>
+    <button onclick="checkout()">Order on WhatsApp</button>
+    <p class="small">Demo checkout: confirm availability and delivery before ordering.</p>
+  </section>
+</main>
+
+<section id="ownerLogin" class="hidden">
+  <div class="panel">
+    <h2>✦ Owner Login</h2>
+    <label>Username</label>
+    <input id="username" autocomplete="username" placeholder="Enter username">
+    <label>Password</label>
+    <input id="password" type="password" autocomplete="current-password" placeholder="Enter password">
+    <button onclick="login()">Login to Dashboard</button>
+    <p id="loginMessage"></p>
+    <p class="small">Demo credentials: owner / ZenShop@123. These credentials are visible in this HTML and are not secure for a live business.</p>
+  </div>
+</section>
+
+<section id="dashboard" class="hidden">
+  <div class="panel">
+    <h2>Owner Dashboard</h2>
+    <p>Welcome to ZenShops management.</p>
+    <div class="rowbtn">
+      <button onclick="showPage('addProduct')">＋ Add Product</button>
+      <button onclick="showPage('manageProducts')">Manage Products</button>
+      <button onclick="showPage('ownerOrders')">View Orders</button>
+      <button onclick="logout()">Logout</button>
+    </div>
+    <p class="small">Products are saved in this browser on this device. This demo does not provide secure online administration.</p>
+  </div>
+</section>
+
+<section id="addProduct" class="hidden">
+  <div class="panel">
+    <h2 id="formTitle">Add New Product</h2>
+    <form id="productForm">
+      <label>Product Name</label>
+      <input id="productName" required placeholder="Example: Premium Bag">
+
+      <label>Price (₹)</label>
+      <input id="productPrice" type="number" min="1" required placeholder="499">
+
+      <label>Product Description</label>
+      <textarea id="productDescription" placeholder="Describe your product"></textarea>
+
+      <label>Product Picture</label>
+      <input id="productImage" type="file" accept="image/*">
+      <img id="imagePreview" class="preview hidden" alt="Selected product preview">
+      <p class="small">Choose an image from your phone. Smaller JPG or WebP pictures work best. Images are stored in this browser for this demo.</p>
+
+      <label>Emoji (used if no picture is selected)</label>
+      <input id="productEmoji" maxlength="8" placeholder="👜">
+
+      <div class="rowbtn">
+        <button type="submit">Save Product</button>
+        <button type="button" onclick="showPage('dashboard')">Cancel</button>
+      </div>
+    </form>
+    <p id="formMessage"></p>
+  </div>
+</section>
+
+<section id="manageProducts" class="hidden">
+  <div class="panel">
+    <h2>Manage Products</h2>
+    <div id="manageList"></div>
+    <button onclick="showPage('dashboard')">Back to Dashboard</button>
+  </div>
+</section>
+
+<section id="ownerOrders" class="hidden">
+  <div class="panel">
+    <h2>Orders</h2>
+    <div id="ordersList">No demo orders yet.</div>
+    <p class="small">WhatsApp enquiries are not automatically recorded here. A live order database requires a backend.</p>
+    <button onclick="showPage('dashboard')">Back to Dashboard</button>
+  </div>
+</section>
+
+<footer>
+  <p class="logo">✦ ZenShops</p>
+  <p>Luxury style. Everyday value.</p>
+  <p>© 2026 ZenShops</p>
+</footer>
+
+<script>
+const STORAGE_KEY="zenshops_demo_products_v1";
+const ORDER_KEY="zenshops_demo_orders_v1";
+
+const starterProducts=[
+ {id:1,name:"Premium Everyday Bag",price:499,emoji:"👜",description:"A stylish everyday bag.",image:""},
+ {id:2,name:"Wireless Earbuds",price:799,emoji:"🎧",description:"Everyday wireless audio.",image:""},
+ {id:3,name:"Minimal Desk Lamp",price:599,emoji:"💡",description:"A simple desk accessory.",image:""},
+ {id:4,name:"Insulated Water Bottle",price:299,emoji:"🥤",description:"A reusable bottle.",image:""}
+];
+
+let products=loadProducts();
+let cart=[];
+let editingId=null;
+let selectedImage="";
+
+function loadProducts(){
+ try{
+  const saved=localStorage.getItem(STORAGE_KEY);
+  return saved?JSON.parse(saved):starterProducts;
+ }catch(e){return starterProducts}
+}
+
+function saveProducts(){
+ try{
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(products));
+  return true;
+ }catch(e){
+  alert("Storage is full. Try a smaller product image.");
+  return false;
+ }
+}
+
+function showPage(id){
+ ["home","ownerLogin","dashboard","addProduct","manageProducts","ownerOrders"].forEach(x=>{
+  document.getElementById(x).classList.add("hidden");
+ });
+ document.getElementById("cart").classList.add("hidden");
+
+ if(id==="productsSection"){
+  document.getElementById("home").classList.remove("hidden");
+  document.getElementById("productsSection").scrollIntoView({behavior:"smooth"});
+  return;
+ }
+ if(id==="cart"){
+  document.getElementById("home").classList.remove("hidden");
+  document.getElementById("cart").classList.remove("hidden");
+  renderCart();
+  document.getElementById("cart").scrollIntoView({behavior:"smooth"});
+  return;
+ }
+ if(id==="home"){
+  document.getElementById("home").classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+  return;
+ }
+ document.getElementById(id).classList.remove("hidden");
+ window.scrollTo({top:0,behavior:"smooth"});
+ if(id==="manageProducts")renderManage();
+ if(id==="ownerOrders")renderOrders();
+}
+
+function login(){
+ const u=document.getElementById("username").value;
+ const p=document.getElementById("password").value;
+ if(u==="owner" && p==="ZenShop@123"){
+  sessionStorage.setItem("zenshops_demo_logged_in","yes");
+  document.getElementById("loginMessage").textContent="";
+  document.getElementById("password").value="";
+  showPage("dashboard");
+ }else{
+  document.getElementById("loginMessage").textContent="Incorrect username or password.";
+ }
+}
+
+function logout(){
+ sessionStorage.removeItem("zenshops_demo_logged_in");
+ showPage("home");
+}
+
+function requireOwner(){
+ if(sessionStorage.getItem("zenshops_demo_logged_in")!=="yes"){
+  showPage("ownerLogin");
+  return false;
+ }
+ return true;
+}
+
+function escapeHTML(value){
+ return String(value??"").replace(/[&<>"']/g,c=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ }[c]));
+}
+
+function renderProducts(){
+ const el=document.getElementById("productList");
+ el.innerHTML=products.map(p=>`
+  <article class="product">
+   ${p.image
+    ?`<img src="${p.image}" alt="${escapeHTML(p.name)}">`
+    :`<div class="pic">${escapeHTML(p.emoji||"🛍️")}</div>`}
+   <h3>${escapeHTML(p.name)}</h3>
+   <p>${escapeHTML(p.description||"")}</p>
+   <div class="price">₹${Number(p.price).toLocaleString("en-IN")}</div>
+   <button onclick="addToCart(${Number(p.id)})">Add to Cart</button>
+  </article>
+ `).join("");
+}
+
+function addToCart(id){
+ const p=products.find(x=>x.id===id);
+ if(p){cart.push(p);renderCart();alert("Added to cart!")}
+}
+
+function renderCart(){
+ const el=document.getElementById("cartItems");
+ if(!cart.length){el.textContent="Your cart is empty."}
+ else{
+  el.innerHTML=cart.map((p,i)=>`
+   <p>${escapeHTML(p.name)} — ₹${Number(p.price)}
+   <button onclick="removeFromCart(${i})">Remove</button></p>
+  `).join("");
+ }
+ const total=cart.reduce((s,p)=>s+Number(p.price),0);
+ document.getElementById("total").textContent="Total: ₹"+total.toLocaleString("en-IN");
+}
+
+function removeFromCart(i){cart.splice(i,1);renderCart()}
+
+function checkout(){
+ if(!cart.length){alert("Please add a product first.");return}
+ const lines=cart.map(p=>`${p.name} - ₹${p.price}`);
+ const total=cart.reduce((s,p)=>s+Number(p.price),0);
+ const message="Hello ZenShops! I would like to enquire about:\n"+
+ lines.join("\n")+"\nTotal: ₹"+total+
+ "\nPlease confirm availability, final price and delivery.";
+ const url="https://wa.me/?text="+encodeURIComponent(message);
+ window.open(url,"_blank");
+}
+
+const imageInput=document.getElementById("productImage");
+imageInput.addEventListener("change",function(){
+ const file=this.files&&this.files[0];
+ if(!file){selectedImage="";return}
+ if(!file.type.startsWith("image/")){
+  alert("Please select an image file.");this.value="";return;
+ }
+ const reader=new FileReader();
+ reader.onload=function(e){
+  const img=new Image();
+  img.onload=function(){
+   const canvas=document.createElement("canvas");
+   const max=700;
+   let w=img.width,h=img.height;
+   const scale=Math.min(1,max/Math.max(w,h));
+   w=Math.round(w*scale);h=Math.round(h*scale);
+   canvas.width=w;canvas.height=h;
+   canvas.getContext("2d").drawImage(img,0,0,w,h);
+   selectedImage=canvas.toDataURL("image/jpeg",0.75);
+   const preview=document.getElementById("imagePreview");
+   preview.src=selectedImage;preview.classList.remove("hidden");
+  };
+  img.src=e.target.result;
+ };
+ reader.readAsDataURL(file);
+});
+
+function openAddForm(){
+ if(!requireOwner())return;
+ editingId=null;selectedImage="";
+ document.getElementById("productForm").reset();
+ document.getElementById("formTitle").textContent="Add New Product";
+ document.getElementById("formMessage").textContent="";
+ document.getElementById("imagePreview").classList.add("hidden");
+ showPage("addProduct");
+}
+
+document.getElementById("productForm").addEventListener("submit",function(e){
+ e.preventDefault();
+ if(!requireOwner())return;
+
+ const name=document.getElementById("productName").value.trim();
+ const price=Number(document.getElementById("productPrice").value);
+ const description=document.getElementById("productDescription").value.trim();
+ const emoji=document.getElementById("productEmoji").value.trim()||"🛍️";
+
+ if(!name||!Number.isFinite(price)||price<=0){
+  alert("Enter a product name and a valid price.");return;
+ }
+
+ if(editingId!==null){
+  const p=products.find(x=>x.id===editingId);
+  if(!p)return;
+  p.name=name;p.price=price;p.description=description;p.emoji=emoji;
+  if(selectedImage)p.image=selectedImage;
+ }else{
+  products.push({
+   id:Date.now(),name,price,description,emoji,
+   image:selectedImage||""
+  });
+ }
+
+ if(!saveProducts())return;
+ renderProducts();
+ editingId=null;selectedImage="";
+ document.getElementById("productForm").reset();
+ document.getElementById("imagePreview").classList.add("hidden");
+ alert("Product saved successfully!");
+ showPage("manageProducts");
+});
+
+function renderManage(){
+ if(!requireOwner())return;
+ const el=document.getElementById("manageList");
+ if(!products.length){el.innerHTML="<p>No products yet.</p>";return}
+ el.innerHTML=products.map(p=>`
+  <div style="border-bottom:1px solid #554522;padding:12px 0">
+   <strong>${escapeHTML(p.name)}</strong> — ₹${Number(p.price)}
+   ${p.image?'<p>Custom product image added</p>':""}
+   <div class="rowbtn" style="margin-top:8px">
+    <button onclick="editProduct(${Number(p.id)})">Edit</button>
+    <button onclick="deleteProduct(${Number(p.id)})">Delete</button>
+   </div>
+  </div>
+ `).join("");
+}
+
+function editProduct(id){
+ if(!requireOwner())return;
+ const p=products.find(x=>x.id===id);
+ if(!p)return;
+ editingId=id;selectedImage="";
+ document.getElementById("productForm").reset();
+ document.getElementById("formTitle").textContent="Edit Product";
+ document.getElementById("productName").value=p.name;
+ document.getElementById("productPrice").value=p.price;
+ document.getElementById("productDescription").value=p.description||"";
+ document.getElementById("productEmoji").value=p.emoji||"";
+ const preview=document.getElementById("imagePreview");
+ if(p.image){preview.src=p.image;preview.classList.remove("hidden")}
+ else preview.classList.add("hidden");
+ document.getElementById("formMessage").textContent="Choose a new image to replace the current one.";
+ showPage("addProduct");
+}
+
+function deleteProduct(id){
+ if(!requireOwner())return;
+ const p=products.find(x=>x.id===id);
+ if(!p||!confirm("Delete "+p.name+"?"))return;
+ products=products.filter(x=>x.id!==id);
+ saveProducts();renderProducts();renderManage();
+}
+
+function renderOrders(){
+ document.getElementById("ordersList").textContent=
+ "No orders are stored in this demo. WhatsApp enquiries are sent directly to WhatsApp.";
+}
+
+renderProducts();
+showPage("home");
+</script>
+</body>
+    </html>
+    
